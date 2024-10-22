@@ -1,0 +1,94 @@
+CREATE DATABASE ecommerce;
+USE ecommerce;
+
+-- Table for users
+CREATE TABLE ecomm_users (
+    uid INT(11) AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(150) UNIQUE,
+    firstname VARCHAR(150),
+    lastname VARCHAR(150),
+    email VARCHAR(150) UNIQUE,
+    pass VARCHAR(150),
+    img VARCHAR(255)
+);
+
+-- Table for categories
+CREATE TABLE ecomm_categories (
+    cid INT(11) AUTO_INCREMENT PRIMARY KEY,
+    cname VARCHAR(255) UNIQUE,
+    cimg VARCHAR(255)
+);
+
+-- Table for lawyers (products)
+CREATE TABLE ecomm_lawyers (
+    pid INT(11) AUTO_INCREMENT PRIMARY KEY,
+    pname VARCHAR(255),
+    pprice INT(11),
+    pimg VARCHAR(255),
+    pdes VARCHAR(255),
+    pcategory INT(11),
+    FOREIGN KEY (pcategory) REFERENCES ecomm_categories(cid)
+);
+
+-- Table for cart
+CREATE TABLE ecomm_cart (
+    cart_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    pid INT(11),
+    uid INT(11),
+    price INT(11),
+    subtotal DECIMAL(10,2),
+    FOREIGN KEY (pid) REFERENCES ecomm_lawyers(pid),
+    FOREIGN KEY (uid) REFERENCES ecomm_users(uid),
+    UNIQUE(uid, pid) -- A user can only have one entry per product in the cart
+);
+
+-- Table for orders
+CREATE TABLE ecomm_orders (
+    oid INT(11) AUTO_INCREMENT PRIMARY KEY,
+    uid INT(11),
+    oname VARCHAR(150),
+    ophone VARCHAR(150),
+    oaddress VARCHAR(150),
+    oemail VARCHAR(150),
+    total DECIMAL(10,2),
+    FOREIGN KEY (uid) REFERENCES ecomm_users(uid)
+);
+
+-- Table for order items
+CREATE TABLE ecomm_order_items (
+    item_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    pid INT(11),
+    oid INT(11),
+    price DECIMAL(10,2),
+    subtotal DECIMAL(10,2),
+    FOREIGN KEY (pid) REFERENCES ecomm_lawyers(pid),
+    FOREIGN KEY (oid) REFERENCES ecomm_orders(oid)
+);
+
+-- Table for contact
+CREATE TABLE contact (
+    id INT(11) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    sub VARCHAR(100),
+    msg VARCHAR(250)
+);
+
+-- Additional user table
+CREATE TABLE user (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) UNIQUE,
+    email VARCHAR(255) UNIQUE,
+    pass VARCHAR(255),
+    image VARCHAR(255)
+);
+
+-- Table for comments
+CREATE TABLE comments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    comment TEXT NOT NULL,
+    parent_id INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
